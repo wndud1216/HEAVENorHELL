@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2025 by wndud1216 (http://jsbin.com/rifusak/8/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Heaven and Hell</title>
+  <style>
+    /* 1. 기본 설정 */
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 2. 전체 컨테이너 */
+    .image-container {
+      position: relative;
+      aspect-ratio: 16 / 9; 
+      width: 100%;
+      height: 100%;
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden; 
+    }
+
+    /* 3. 배경 이미지 */
+    .bg-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* 4. 구역 설정 */
+    .heaven, .hell {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      overflow: hidden; 
+    }
+    .heaven { left: 0; }
+    .hell { right: 0; }
+
+
+    /* =========================================
+       😇 천국: 공통 설정 (크기 설정 삭제됨)
+       ========================================= */
+    .heaven img {
+      position: absolute;
+      /* ⭐ width 삭제됨 -> 아래 개별 설정에서 적용 */
+      
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+
+    /* 패턴 애니메이션들 */
+    @keyframes floatType1 {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(20vw, 5vh) rotate(5deg); }
+      100% { transform: translate(-5vw, -5vh) rotate(-5deg); }
+    }
+    @keyframes floatType2 {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-5vw, 20vh) rotate(-3deg); }
+      100% { transform: translate(5vw, -10vh) rotate(3deg); }
+    }
+    @keyframes floatType3 {
+      0% { transform: translate(0, 0); }
+      33% { transform: translate(15vw, -10vh); }
+      66% { transform: translate(10vw, 15vh); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* ⭐ [천국 캐릭터 개별 크기 조절] width 값을 수정하세요! */
+    
+    .data   { width: 50px; top: 20%; left: 10%; animation-name: floatType1; animation-duration: 10s; }
+    
+    .vision { width: 130px; top: 10%; left: 40%; animation-name: floatType2; animation-duration: 12s; animation-delay: -2s; }
+    
+    .giant  { width: 200px; top: 40%; left: 0%; animation-name: floatType3; animation-duration: 18s; animation-delay: -5s; }
+    
+    .atom   { width: 100px; top: 30%; left: 40%; animation-name: floatType1; animation-duration: 8s; animation-delay: -1s; }
+    
+    .trans  { width: 170px; top: 30%; left: 70%; animation-name: floatType2; animation-duration: 15s; animation-delay: -3s; }
+    
+    .wallE  { width: 80px; top: 60%; left: 10%; animation-name: floatType3; animation-duration: 11s; animation-delay: -4s; }
+
+
+    /* =========================================
+       😈 지옥: 공통 설정 (크기 설정 삭제됨)
+       ========================================= */
+    .hell img {
+      position: absolute;
+      /* ⭐ width 삭제됨 -> 아래 개별 설정에서 적용 */
+      
+      top: -150px; 
+      animation-name: straightFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes straightFall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(130vh); } 
+    }
+
+    /* ⭐ [지옥 캐릭터 개별 크기 조절] width 값을 수정하세요! */
+    /* 속도: 1.5초 ~ 3.0초 (무게감 있게) */
+    
+    .smith  { width: 50px; left: 10%;  animation-delay: 0s;   animation-duration: 1.3s; } 
+    
+    .skynet { width: 150px; left: 25%; animation-delay: 1.5s;   animation-duration: 1.5s; }
+    
+    .ultron { width: 150px; left: 60%; animation-delay: 2s; animation-duration: 1.8s; }
+    
+    .karen  { width: 120px; left: 75%; animation-delay: 1.5s; animation-duration: 1.5s; } 
+    
+    .hal    { width: 40px; left: 50%; animation-delay: 1s;   animation-duration: 2s; }
+
+
+    /* 5. 중앙 버튼 */
+    .button-wrapper {
+      position: absolute;
+      top: 72.3%;
+      left: 50.2%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      display: inline-block;
+      border-radius: 50%;
+      mix-blend-mode: difference; 
+      width: 15%; 
+      max-width: 165px;
+    }
+
+    .button-image {
+      width: 100%;
+      display: block;
+      animation: spin 6s linear infinite;
+      filter: drop-shadow(0 0 15px red);
+      transition: filter 0.3s ease;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .button-wrapper:hover .button-image {
+      filter: brightness(1.3) drop-shadow(0 0 30px red);
+      animation-duration: 0.5s; 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="image-container">
+    <img src="https://i.imgur.com/z64aXpu.png" class="bg-image" alt="배경">
+
+    <div class="heaven">
+      <img src="https://i.imgur.com/1LU8XZg.png" class="data" alt="데이터소령">
+      <img src="https://i.imgur.com/MpCAY1X.png" class="vision" alt="비전">
+      <img src="https://i.imgur.com/c8It05q.png" class="giant" alt="아이언자이언트">
+      <img src="https://i.imgur.com/Sneb4Lx.png" class="atom" alt="아톰">
+      <img src="https://i.imgur.com/UcdmRZz.png" class="trans" alt="트랜스포머">
+      <img src="https://i.imgur.com/xo5IIOD.png" class="wallE" alt="월E">
+    </div>
+    
+    <div class="hell">
+      <img src="https://i.imgur.com/bN6CzHc.png" class="smith" alt="스미스요원">
+      <img src="https://i.imgur.com/lumewDz.png" class="skynet" alt="스카이넷">
+      <img src="https://i.imgur.com/rLjH5Oy.png" class="ultron" alt="울트론">
+      <img src="https://i.imgur.com/n1y7coA.png" class="karen" alt="캐런">
+      <img src="https://i.imgur.com/60OiyJA.png" class="hal" alt="HAL9000">
+    </div>
+
+    <a href="https://wndud1216.github.io/HEAVENorHELL/" class="button-wrapper">
+      <img src="https://i.imgur.com/NYbMjdu.png" class="button-image" alt="버튼">
+    </a>
+  </div>
+
+  <script>
+    const hellImages = document.querySelectorAll('.hell img');
+
+    function setRandomFalling(img) {
+      const randomLeft = Math.random() * 70; 
+      
+      // 랜덤 속도: 1.0초 ~ 3.0초
+      const randomDuration = 1.0 + Math.random() * 2.0;
+
+      img.style.left = randomLeft + '%';
+      img.style.animationDuration = randomDuration + 's';
+    }
+
+    hellImages.forEach(img => {
+      img.addEventListener('animationiteration', () => {
+        setRandomFalling(img);
+      });
+    });
+  </script>
+
+</body>
+</html>
