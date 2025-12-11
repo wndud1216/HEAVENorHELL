@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<!--
-Created using JS Bin
-http://jsbin.com
-
-Copyright (c) 2025 by wndud1216 (http://jsbin.com/rifusak/8/edit)
-
-Released under the MIT license: http://jsbin.mit-license.org
--->
 <meta name="robots" content="noindex">
 <html lang="ko">
 <head>
@@ -56,26 +48,28 @@ Released under the MIT license: http://jsbin.mit-license.org
       width: 50%;
       height: 100%;
       z-index: 5;
-      pointer-events: none;
+      pointer-events: none; /* 구역 자체는 클릭 통과 */
       overflow: hidden; 
     }
     .heaven { left: 0; }
     .hell { right: 0; }
 
+    /* ⭐ [클릭 설정] 캐릭터 이미지 클릭 활성화 */
+    .heaven img, .hell img {
+      pointer-events: auto; /* 이미지는 클릭 가능 */
+      cursor: pointer;      /* 마우스 커서 손가락 모양 */
+    }
 
     /* =========================================
-       😇 천국: 공통 설정 (크기 설정 삭제됨)
+       😇 천국: 애니메이션 설정
        ========================================= */
     .heaven img {
       position: absolute;
-      /* ⭐ width 삭제됨 -> 아래 개별 설정에서 적용 */
-      
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
       animation-direction: alternate;
     }
 
-    /* 패턴 애니메이션들 */
     @keyframes floatType1 {
       0% { transform: translate(0, 0) rotate(0deg); }
       50% { transform: translate(20vw, 5vh) rotate(5deg); }
@@ -93,28 +87,19 @@ Released under the MIT license: http://jsbin.mit-license.org
       100% { transform: translate(0, 0); }
     }
 
-    /* ⭐ [천국 캐릭터 개별 크기 조절] width 값을 수정하세요! */
-    
     .data   { width: 50px; top: 20%; left: 10%; animation-name: floatType1; animation-duration: 10s; }
-    
     .vision { width: 130px; top: 10%; left: 40%; animation-name: floatType2; animation-duration: 12s; animation-delay: -2s; }
-    
     .giant  { width: 200px; top: 40%; left: 0%; animation-name: floatType3; animation-duration: 18s; animation-delay: -5s; }
-    
     .atom   { width: 100px; top: 30%; left: 40%; animation-name: floatType1; animation-duration: 8s; animation-delay: -1s; }
-    
     .trans  { width: 170px; top: 30%; left: 70%; animation-name: floatType2; animation-duration: 15s; animation-delay: -3s; }
-    
     .wallE  { width: 80px; top: 60%; left: 10%; animation-name: floatType3; animation-duration: 11s; animation-delay: -4s; }
 
 
     /* =========================================
-       😈 지옥: 공통 설정 (크기 설정 삭제됨)
+       😈 지옥: 애니메이션 설정
        ========================================= */
     .hell img {
       position: absolute;
-      /* ⭐ width 삭제됨 -> 아래 개별 설정에서 적용 */
-      
       top: -150px; 
       animation-name: straightFall;
       animation-timing-function: linear;
@@ -126,17 +111,10 @@ Released under the MIT license: http://jsbin.mit-license.org
       100% { transform: translateY(130vh); } 
     }
 
-    /* ⭐ [지옥 캐릭터 개별 크기 조절] width 값을 수정하세요! */
-    /* 속도: 1.5초 ~ 3.0초 (무게감 있게) */
-    
     .smith  { width: 50px; left: 10%;  animation-delay: 0s;   animation-duration: 1.3s; } 
-    
     .skynet { width: 150px; left: 25%; animation-delay: 1.5s;   animation-duration: 1.5s; }
-    
     .ultron { width: 150px; left: 60%; animation-delay: 2s; animation-duration: 1.8s; }
-    
     .karen  { width: 120px; left: 75%; animation-delay: 1.5s; animation-duration: 1.5s; } 
-    
     .hal    { width: 40px; left: 50%; animation-delay: 1s;   animation-duration: 2s; }
 
 
@@ -171,6 +149,51 @@ Released under the MIT license: http://jsbin.mit-license.org
       filter: brightness(1.3) drop-shadow(0 0 30px red);
       animation-duration: 0.5s; 
     }
+
+    /* =========================================
+       📦 6. 팝업창 스타일 (새로 추가됨)
+       ========================================= */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .popup-content {
+      position: relative;
+      max-width: 80%;
+      max-height: 80%;
+      text-align: center;
+    }
+
+    .popup-content img {
+      max-width: 100%;
+      max-height: 70vh;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+    }
+
+    .close-msg {
+      color: white;
+      margin-top: 15px;
+      font-family: sans-serif;
+      font-size: 14px;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -179,20 +202,40 @@ Released under the MIT license: http://jsbin.mit-license.org
     <img src="https://i.imgur.com/z64aXpu.png" class="bg-image" alt="배경">
 
     <div class="heaven">
-      <img src="https://i.imgur.com/1LU8XZg.png" class="data" alt="데이터소령">
-      <img src="https://i.imgur.com/MpCAY1X.png" class="vision" alt="비전">
-      <img src="https://i.imgur.com/c8It05q.png" class="giant" alt="아이언자이언트">
-      <img src="https://i.imgur.com/Sneb4Lx.png" class="atom" alt="아톰">
-      <img src="https://i.imgur.com/UcdmRZz.png" class="trans" alt="트랜스포머">
-      <img src="https://i.imgur.com/xo5IIOD.png" class="wallE" alt="월E">
+      <img src="https://i.imgur.com/1LU8XZg.png" class="data" alt="데이터소령"
+           data-popup="https://i.imgur.com/xfmc3iU.png">
+           
+      <img src="https://i.imgur.com/MpCAY1X.png" class="vision" alt="비전"
+           data-popup="https://i.imgur.com/sx1y3vB.png">
+           
+      <img src="https://i.imgur.com/c8It05q.png" class="giant" alt="아이언자이언트"
+           data-popup="https://i.imgur.com/txQld8h.png">
+           
+      <img src="https://i.imgur.com/Sneb4Lx.png" class="atom" alt="아톰"
+           data-popup="https://i.imgur.com/jYAUDPp.png">
+           
+      <img src="https://i.imgur.com/UcdmRZz.png" class="trans" alt="트랜스포머"
+           data-popup="https://i.imgur.com/YVFEL7j.png">
+           
+      <img src="https://i.imgur.com/xo5IIOD.png" class="wallE" alt="월E"
+           data-popup="https://i.imgur.com/Cc87zOg.png">
     </div>
     
     <div class="hell">
-      <img src="https://i.imgur.com/bN6CzHc.png" class="smith" alt="스미스요원">
-      <img src="https://i.imgur.com/lumewDz.png" class="skynet" alt="스카이넷">
-      <img src="https://i.imgur.com/rLjH5Oy.png" class="ultron" alt="울트론">
-      <img src="https://i.imgur.com/n1y7coA.png" class="karen" alt="캐런">
-      <img src="https://i.imgur.com/60OiyJA.png" class="hal" alt="HAL9000">
+      <img src="https://i.imgur.com/bN6CzHc.png" class="smith" alt="스미스요원"
+           data-popup="https://i.imgur.com/i3spDnT.png">
+           
+      <img src="https://i.imgur.com/lumewDz.png" class="skynet" alt="스카이넷"
+           data-popup="https://i.imgur.com/s4VRWOa.png">
+           
+      <img src="https://i.imgur.com/rLjH5Oy.png" class="ultron" alt="울트론"
+           data-popup="https://i.imgur.com/HcMmo5q.png">
+           
+      <img src="https://i.imgur.com/n1y7coA.png" class="karen" alt="캐런"
+           data-popup="https://i.imgur.com/ueQglgR.png">
+           
+      <img src="https://i.imgur.com/60OiyJA.png" class="hal" alt="HAL9000"
+           data-popup="https://i.imgur.com/8dQQ2ob.png">
     </div>
 
     <a href="heavenOrHell.html" class="button-wrapper">
@@ -200,15 +243,20 @@ Released under the MIT license: http://jsbin.mit-license.org
     </a>
   </div>
 
+  <div id="popup-overlay" class="popup-overlay">
+    <div class="popup-content">
+      <img id="popup-img" src="" alt="Popup">
+      <div class="close-msg">화면을 클릭하면 닫힙니다</div>
+    </div>
+  </div>
+
   <script>
+    // 1. 지옥 캐릭터 랜덤 낙하
     const hellImages = document.querySelectorAll('.hell img');
 
     function setRandomFalling(img) {
       const randomLeft = Math.random() * 70; 
-      
-      // 랜덤 속도: 1.0초 ~ 3.0초
       const randomDuration = 1.0 + Math.random() * 2.0;
-
       img.style.left = randomLeft + '%';
       img.style.animationDuration = randomDuration + 's';
     }
@@ -217,6 +265,29 @@ Released under the MIT license: http://jsbin.mit-license.org
       img.addEventListener('animationiteration', () => {
         setRandomFalling(img);
       });
+    });
+
+    // 2. 팝업 기능 (data-popup 속성 사용)
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupImg = document.getElementById('popup-img');
+    const allCharacters = document.querySelectorAll('.heaven img, .hell img');
+
+    allCharacters.forEach(character => {
+      character.addEventListener('click', (e) => {
+        // data-popup에 주소가 있으면 그것을, 없으면 원래 이미지를 사용
+        const popupUrl = e.target.getAttribute('data-popup') || e.target.src;
+        
+        // 주소가 비어있으면 팝업 띄우지 않음 (선택사항)
+        if(popupUrl.trim() === "") return;
+
+        popupImg.src = popupUrl;
+        popupOverlay.classList.add('active');
+      });
+    });
+
+    // 팝업 닫기
+    popupOverlay.addEventListener('click', () => {
+      popupOverlay.classList.remove('active');
     });
   </script>
 
