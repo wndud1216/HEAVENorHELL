@@ -206,7 +206,7 @@
      .main-btn {
             font-size: 1rem;
             color: white;
-            opacity: .9;
+            opacity: .7;
             font-style: italic;            
           margin: 0; /* p태그 기본 여백 제거하여 위치 정확하게 잡기 */
             font-weight: bold; /* 글씨 조금 더 잘 보이게 (선택 사항) */
@@ -279,7 +279,7 @@
 
     function setRandomFalling(img) {
       const randomLeft = Math.random() * 70; 
-      const randomDuration = 1.0 + Math.random() * 2.0;
+      const randomDuration = 2.0 + Math.random() * 3.0;
       img.style.left = randomLeft + '%';
       img.style.animationDuration = randomDuration + 's';
     }
