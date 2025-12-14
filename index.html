@@ -10,7 +10,6 @@
             padding: 0;
             background-color: #000;
             overflow: hidden;
-            font-family: sans-serif;
         }
 
         .image-container {
@@ -36,13 +35,15 @@
             transform: translate(-50%, -50%);
             height: 115vh;
             width: auto;
-            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            /* 기본 움직임은 부드럽게 (1.5초) */
+            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* --- AI (오른쪽) --- */
         .ai { z-index: 3; left: 56%; }
         .btn-ai {
-            z-index: 5; mix-blend-mode: color-dodge; left: 56%;
+            z-index: 5; left: 56%;
+            mix-blend-mode: color-dodge;
             opacity: 0; cursor: pointer;
         }
         .btn-ai:hover { opacity: 1; }
@@ -50,119 +51,282 @@
         /* --- Human (왼쪽) --- */
         .human { z-index: 3; left: 44%; }
         .btn-human {
-            z-index: 5; mix-blend-mode: overlay; left: 44%;
+            z-index: 5; left: 44%;
+            mix-blend-mode: overlay;
             opacity: 0; cursor: pointer;
         }
         .btn-human:hover { opacity: 1; }
 
         /* --- 타이틀 --- */
         .title-image {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: auto;
-            z-index: 7; display: block; mix-blend-mode: overlay; pointer-events: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 7;
+            display: block;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+      
+         /* ★ 텍스트 스타일 ★ */
+
+        .text-group {
+
+            position: absolute;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            z-index: 10;
+
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+
+            cursor: pointer; /* 마우스 올리면 손가락 모양 */
+
         }
 
-        /* ★ 텍스트 스타일 ★ */
-        .text-group {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            cursor: pointer; /* 마우스 올리면 손가락 모양 */
-        }
+
 
         .text-group p {
+
             margin: 5px 0;
+
             opacity: 0.7; /* 평소 투명도 */
+
             transition: opacity 0.3s; /* 부드러운 전환 */
+
         }
+
+
 
         /* 마우스 올렸을 때 잘 보이게 함 */
+
         .text-group:hover p {
+
             opacity: 1;
+
         }
+
+
 
         .name { font-size: 1rem; font-weight: 300; }
+
         .desc { font-size: 1.8rem; font-weight: bold; font-style: italic; }
 
+
+
         /* 왼쪽 위치 (지우님) */
+
         .left-side {
+
             left: 5%;
+
             text-align: left;
+
             color: white; 
+
         }
+
+
 
         /* 오른쪽 위치 (주영님) */
+
         .right-side {
+
             right: 5%;
+
             text-align: right;
+
             color: #3d91ff; 
+
         }
 
-        /* --- 클릭 후 애니메이션 (.merged) --- */
-        .image-container.merged .ai,
-        .image-container.merged .btn-ai,
-        .image-container.merged .human,
-        .image-container.merged .btn-human { left: 50%; }
-        .image-container.merged .human,
-        .image-container.merged .btn-human { transform: translate(-50%, -50%) rotate(180deg); }
 
 
-        /* ★★★ 팝업창(모달) 스타일 추가 ★★★ */
+        /* =========================================
+           [Step 1] 중앙으로 모이기 (Merge)
+           ========================================= */
+        
+        /* 1. 공통: 모든 이미지가 중앙으로 이동하려 함 */
+        .image-container.mode-human .character-img,
+        .image-container.mode-ai .character-img {
+            left: 50%;
+        }
+
+        /* ★ 핵심 추가 부분: 선택되지 않은 버튼 숨기기 ★ */
+        
+        /* Human 모드일 때 -> AI 버튼 숨김 */
+        .image-container.mode-human .btn-ai {
+            opacity: 0 !important;        /* 강제로 투명하게 */
+            pointer-events: none;         /* 클릭 방지 */
+            transition: none !important;  /* 이동 효과 없이 즉시 사라짐 */
+        }
+
+        /* AI 모드일 때 -> Human 버튼 숨김 */
+        .image-container.mode-ai .btn-human {
+            opacity: 0 !important;        /* 강제로 투명하게 */
+            pointer-events: none;         /* 클릭 방지 */
+            transition: none !important;  /* 이동 효과 없이 즉시 사라짐 */
+        }
+
+
+        /* 2. 회전 로직 */
+
+        /* Human 모드: Human 회전 */
+        .image-container.mode-human .human,
+        .image-container.mode-human .btn-human {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+        /* AI 모드: AI 회전 */
+        .image-container.mode-ai .ai,
+        .image-container.mode-ai .btn-ai {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+
+        /* =========================================
+           [Step 2] 퇴장 애니메이션 (Move Out)
+           ========================================= */
+        
+        /* 왼쪽으로 퇴장 (Human 선택 시) */
+        .image-container.move-left .character-img {
+            left: -50% !important;
+            opacity: 0;
+            transition: all 1s ease-in;
+        }
+        /* Human 회전 유지 */
+        .image-container.move-left.mode-human .human,
+        .image-container.move-left.mode-human .btn-human {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+
+        /* 오른쪽으로 퇴장 (AI 선택 시) */
+        .image-container.move-right .character-img {
+            left: 150% !important;
+            opacity: 0;
+            transition: all 1s ease-in;
+        }
+        /* AI 회전 유지 */
+        .image-container.move-right.mode-ai .ai,
+        .image-container.move-right.mode-ai .btn-ai {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+      
+         /* ★★★ 팝업창(모달) 스타일 추가 ★★★ */
+
         .modal {
+
             display: none; /* 숨김 상태 */
+
             position: fixed;
+
             z-index: 100; /* 맨 위로 */
+
             left: 0;
+
             top: 0;
+
             width: 100%;
+
             height: 100%;
+
             background-color: rgba(0,0,0,0.8); /* 뒷배경 어둡게 */
+
             backdrop-filter: blur(5px);
+
         }
+
+
 
         .modal-content {
+
             background-color: #1a1a1a;
+
             margin: 15% auto; /* 중앙 정렬 */
+
             padding: 30px;
+
             border: 1px solid #444;
+
             width: 80%;
+
             max-width: 700px;
+
             color: white;
+
             border-radius: 10px;
+
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+
             position: relative;
+
             text-align: left;
+
             font-style: normal; /* 팝업 내용은 기울임 해제 */
+
         }
+
+
 
         .close-btn {
+
             color: #aaa;
+
             float: right;
+
             font-size: 28px;
+
             font-weight: bold;
+
             cursor: pointer;
+
             position: absolute;
+
             top: 10px;
+
             right: 20px;
+
         }
+
         .close-btn:hover { color: #fff; }
 
+
+
         .modal-title {
+
             font-size: 1.5rem;
+
             margin-bottom: 15px;
+
             color: #fff;
+
             border-bottom: 1px solid #444;
+
             padding-bottom: 10px;
+
         }
 
+
+
         /* 주영님 팝업 타이틀 색상 별도 지정 (선택사항) */
+
         #modalJuyoung .modal-title { color: #3d91ff; }
 
+
+
         .modal-text {
+
             line-height: 1.6;
+
             font-size: 0.95rem;
+
             color: #ddd;
+
         }
 
     </style>
@@ -171,14 +335,18 @@
 
     <div class="image-container" id="container">
         <img src="https://i.imgur.com/40uq4Xd.png" class="bg-image" alt="팀페이지 배경">
+        
         <img src="https://i.imgur.com/S9Pu9rO.png" class="ai character-img" alt="ai블렌드">
         <img src="https://i.imgur.com/arGGfWu.png" class="human character-img" alt="인간블렌드">
-        <img src="https://i.imgur.com/sgPobik.png" class="btn-ai character-img" alt="ai버튼">
+        
+        <img src="https://i.imgur.com/sgPobik.png" class="btn-ai character-img" id="aiBtn" alt="ai버튼">
         <img src="https://i.imgur.com/Pr7ddGN.png" class="btn-human character-img" id="humanBtn" alt="인간버튼">
+        
         <img src="https://i.imgur.com/EJenlBG.png" class="title-image" alt="타이틀_칠">
         <img src="https://i.imgur.com/Fk3TJX8.png" class="title-image" alt="타이틀_획">
-
-        <div class="text-group left-side" id="jiwooText">
+    </div>
+  
+     <div class="text-group left-side" id="jiwooText">
             <p class="name">Jiwoo Kim</p>
             <p class="desc">지우님 프젝 제목</p>
         </div>
@@ -202,6 +370,8 @@
         </div>
     </div>
 
+
+
     <div id="modalJuyoung" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -217,41 +387,80 @@
               과연 그것이 옳은 행동 또는 선한 행동이라고 할 수 있을까? 나는 절대로 그럴 수 없다고 생각한다.<br>
               당신의 생각은 어떠한가?
             </p>
+
         </div>
+
     </div>
 
 
-    <script>
-        // 1. 기존 이미지 합치기 기능
-        const humanBtn = document.getElementById('humanBtn');
-        const container = document.getElementById('container');
 
+    <script>
+        const container = document.getElementById('container');
+        const humanBtn = document.getElementById('humanBtn');
+        const aiBtn = document.getElementById('aiBtn');
+
+        const humanPageLink = 'human_page.html';
+        const aiPageLink = 'heavenOrHell.html';
+
+        function startTransition(modeClass, moveClass, linkUrl) {
+            container.classList.add(modeClass);
+
+            setTimeout(function() {
+                container.classList.add(moveClass);
+            }, 1500);
+
+            setTimeout(function() {
+                window.location.href = linkUrl;
+            }, 2500);
+        }
+
+        // Human 클릭 -> 왼쪽(move-left)으로 퇴장
         humanBtn.addEventListener('click', function() {
-            container.classList.toggle('merged');
+            startTransition('mode-human', 'move-left', humanPageLink);
         });
 
+        // AI 클릭 -> 오른쪽(move-right)으로 퇴장
+        aiBtn.addEventListener('click', function() {
+            startTransition('mode-ai', 'move-right', aiPageLink);
+        });
 
-        // 2. ★★★ 팝업 기능 스크립트 ★★★
+      
+      
+           // 2. ★★★ 팝업 기능 스크립트 ★★★
+
         
+
         // 텍스트와 모달 요소 찾기
+
         const jiwooText = document.getElementById('jiwooText');
+
         const juyoungText = document.getElementById('juyoungText');
+
         
+
         const modalJiwoo = document.getElementById('modalJiwoo');
+
         const modalJuyoung = document.getElementById('modalJuyoung');
+
         
+
         const closeBtns = document.getElementsByClassName('close-btn');
 
+
+
         // (1) 텍스트 클릭 시 팝업 열기
+
         jiwooText.addEventListener('click', function() {
             modalJiwoo.style.display = "block";
         });
-
         juyoungText.addEventListener('click', function() {
             modalJuyoung.style.display = "block";
         });
 
+
+
         // (2) 닫기 버튼(X) 클릭 시 팝업 닫기
+
         for (let btn of closeBtns) {
             btn.addEventListener('click', function() {
                 modalJiwoo.style.display = "none";
@@ -259,7 +468,10 @@
             });
         }
 
+
+
         // (3) 팝업 바깥(검은 배경) 클릭 시 닫기
+
         window.addEventListener('click', function(event) {
             if (event.target == modalJiwoo) {
                 modalJiwoo.style.display = "none";
